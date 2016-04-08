@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class UserAgentParser {
-  private final List<UAPattern> patterns;
+  private List<UAPattern> patterns;
 
   public UserAgentParser(List<UAPattern> patterns) {
     this.patterns = patterns;
@@ -57,6 +57,15 @@ public class UserAgentParser {
     return new UserAgent("Other", null, null, null);
   }
 
+  public List<UAPattern> getPatterns() {
+    return patterns;
+  }
+
+  public void setPatterns(List<UAPattern> patterns) {
+    this.patterns = patterns;
+  }
+
+
   protected static UAPattern patternFromMap(Map<String, String> configMap) {
     String regex = configMap.get("regex");
     if (regex == null) {
@@ -69,7 +78,7 @@ public class UserAgentParser {
                          configMap.get("v2_replacement")));
   }
 
-  protected static class UAPattern {
+  protected static class UAPattern extends BasePattern {
     private final Pattern pattern;
     private final String familyReplacement, v1Replacement, v2Replacement;
 
@@ -114,7 +123,12 @@ public class UserAgentParser {
           v3 = matcher.group(4);
         }
       }
-      return family == null ? null : new UserAgent(family, v1, v2, v3);
+      if (family == null) {
+        return null;
+      } else {
+        hit();
+        return new UserAgent(family, v1, v2, v3);
+      }
     }
   }
 }

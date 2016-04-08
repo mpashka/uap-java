@@ -24,33 +24,49 @@ import java.util.Map;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class Device {
-  public final String family;
+  public final String device;
+  public final String brand;
+  public final String model;
 
-  public Device(String family) {
-    this.family = family;
+  public Device(String device, String brand, String model) {
+    this.device = device;
+    this.brand = brand;
+    this.model = model;
   }
 
   public static Device fromMap(Map<String, String> m) {
-    return new Device((String) m.get("family"));
+    return new Device(m.get("family"), m.get("brand"), m.get("model"));
   }
 
   @Override
-  public boolean equals(Object other) {
-    if (other == this) return true;
-    if (!(other instanceof Device)) return false;
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
 
-    Device o = (Device) other;
-    return (this.family != null && this.family.equals(o.family)) || this.family == o.family;
+    Device device1 = (Device) o;
+
+    if (device != null ? !device.equals(device1.device) : device1.device != null) return false;
+    if (brand != null ? !brand.equals(device1.brand) : device1.brand != null) return false;
+    if (model != null ? !model.equals(device1.model) : device1.model != null) return false;
+
+    return true;
   }
 
   @Override
   public int hashCode() {
-    return family == null ? 0 : family.hashCode();
+    int result = device != null ? device.hashCode() : 0;
+    result = 31 * result + (brand != null ? brand.hashCode() : 0);
+    result = 31 * result + (model != null ? model.hashCode() : 0);
+    return result;
   }
+
 
   @Override
   public String toString() {
-    return String.format("{\"family\": %s}",
-                         family == null ? Constants.EMPTY_STRING : '"' + family + '"');
+    return "Device{" +
+            "device='" + device + '\'' +
+            ", brand='" + brand + '\'' +
+            ", model='" + model + '\'' +
+            '}';
   }
 }

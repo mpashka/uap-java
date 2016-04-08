@@ -28,7 +28,7 @@ import java.util.Map;
  * @author Steve Jiang (@sjiang) <gh at iamsteve com>
  */
 public class OSParser {
-  private final List<OSPattern> patterns;
+  private List<OSPattern> patterns;
 
   public OSParser(List<OSPattern> patterns) {
     this.patterns = patterns;
@@ -57,6 +57,15 @@ public class OSParser {
     return new OS("Other", null, null, null, null);
   }
 
+  public List<OSPattern> getPatterns() {
+    return patterns;
+  }
+
+  public void setPatterns(List<OSPattern> patterns) {
+    this.patterns = patterns;
+  }
+
+
   protected static OSPattern patternFromMap(Map<String, String> configMap) {
     String regex = configMap.get("regex");
     if (regex == null) {
@@ -70,7 +79,8 @@ public class OSParser {
                          configMap.get("os_v3_replacement")));
   }
 
-  protected static class OSPattern {
+
+  protected static class OSPattern extends BasePattern {
     private final Pattern pattern;
     private final String osReplacement, v1Replacement, v2Replacement, v3Replacement;
 
@@ -123,7 +133,12 @@ public class OSParser {
         v4 = matcher.group(5);
       }
 
-      return family == null ? null : new OS(family, v1, v2, v3, v4);
+      if (family == null) {
+        return null;
+      } else {
+        hit();
+        return new OS(family, v1, v2, v3, v4);
+      }
     }
   }
 }
